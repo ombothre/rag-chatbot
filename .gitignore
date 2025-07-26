@@ -12,5 +12,8 @@ wheels/
 # Test
 test/
 
+# envs
+.env
+
 # Extra
 agent/services/scraper/data

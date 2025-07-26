@@ -1,7 +1,7 @@
 from langchain_core.messages import AnyMessage, HumanMessage, AIMessage, ToolMessage
 from typing import Callable
 from langchain_core.messages.tool import ToolCall
-from agent.services.tools import tools
+from agent.services.rag.tools import tools
 from langgraph.graph.state import CompiledStateGraph
 from collections.abc import Sequence
 
@@ -12,9 +12,6 @@ def ai_input(content: str) -> Sequence[HumanMessage]:
     return [HumanMessage(content=content)]
 
 def ai_print(state: Sequence[AnyMessage]) -> None:
-    """
-    Combine AI and Tool messages into a single 'AI:' response, preserving order.
-    """
     combined = []
 
     for message in state:
@@ -25,8 +22,6 @@ def ai_print(state: Sequence[AnyMessage]) -> None:
         print("AI: " + " ".join(combined))
     else:
         print("ℹ️ No AI or Tool messages to display.")
-
-
 
 def has_tools(message: AnyMessage) -> bool:
     return isinstance(message, AIMessage) and bool(message.tool_calls)
@@ -46,7 +41,7 @@ def run_tools(tool_list: Sequence[ToolCall]) -> Sequence[ToolMessage]:
         tool_output = ToolMessage(
             tool_call_id = call['id'],
             name=name,
-            content=str(output)
+            content=output
         )
 
         tool_outputs.append(tool_output)
