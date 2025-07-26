@@ -4,6 +4,9 @@ A Retrieval-Augmented Generation (RAG) chatbot specialized in answering question
 It uses LangChain, Qdrant, and Gemini for document retrieval and LLM-based responses, with a FastAPI backend.
 
 ---
+## Langgraph Flow
+
+<img width="429" height="559" alt="image" src="https://github.com/user-attachments/assets/7b5563a8-1be6-42d3-b3ad-e231400dd5a0" />
 
 ## Project Structure
 
