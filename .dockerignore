@@ -1,0 +1,20 @@
+# Python-generated files
+**/__pycache__/**
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Test
+test/
+
+# envs
+.env
+
+# Extra
+agent/services/scraper/data
+**/.DS_Store
