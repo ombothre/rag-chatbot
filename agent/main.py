@@ -5,6 +5,7 @@ from typing import cast
 from agent.services.rag.processor import Processor
 from pathlib import Path
 from agent.services.rag.vectordb import vdb
+from langchain_core.messages import AIMessage
 
 changi_txt_path = Path("agent/services/scraper/data/changi/visible_text")
 changi_pdf_path = Path("agent/services/scraper/data/changi/pdfs")
@@ -28,3 +29,16 @@ def chat(message: str):
     for msg in result["messages"]:
         msg.pretty_print()
     # ai_print(result["messages"])
+
+def api_chat(question: str) -> str:
+    rag_setup()
+    ai = AiGraph()
+    result = cast(MessageState, ai.run(ai_input(question)))
+    response = cast(AIMessage, result["messages"][-1])
+
+    if isinstance(response.content, list):
+        answer = "\n".join(str(item) for item in response.content)
+    else:
+        answer = response.content
+
+    return answer

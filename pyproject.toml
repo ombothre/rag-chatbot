@@ -15,4 +15,5 @@ dependencies = [
     "langchain-text-splitters>=0.3.8",
     "langgraph>=0.5.4",
     "pypdf>=5.8.0",
+    "uvicorn>=0.35.0",
 ]
