@@ -5,15 +5,6 @@ It uses LangChain, Qdrant, and Gemini for document retrieval and LLM-based respo
 
 ---
 
-## Features
-
-- **RAG-powered answers** for airport-related queries.
-- **Document ingestion** from PDFs and text files.
-- **FastAPI backend** for easy integration.
-- **Modular agent/AI code** for extensibility.
-
----
-
 ## Project Structure
 
 ```
@@ -33,6 +24,7 @@ rag-chatbot/
 │
 ├── rag.py                  # CLI entrypoint for chatting
 ├── api.py                  # Run FastAPI server with Uvicorn
+├── Dockerfile              # Docker build instructions
 └── README.md
 ```
 
@@ -96,3 +88,25 @@ python rag.py
 ```
 
 ---
+
+## Docker
+
+You can run the chatbot using Docker for easy deployment.
+
+### Build the Docker image
+
+```bash
+docker build -t rag-chatbot .
+```
+
+### Run the Docker container
+
+```bash
+docker run -p 8000:8000 --env-file agent/config/.env rag-chatbot
+```
+
+- The API will be available at [http://localhost:8000/docs](http://localhost:8000/docs).
+
+**Note:**  
+- Make sure your `.env` file is available and passed to the container using `--env-file`.
+- The provided `Dockerfile` uses `uv` for dependency management and expects your dependencies to be defined in `pyproject.toml
