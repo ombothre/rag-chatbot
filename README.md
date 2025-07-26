@@ -24,6 +24,7 @@ rag-chatbot/
 │   ├── config/             # Settings and secrets
 │   ├── models/             # State and node definitions
 │   ├── services/           # RAG, vector DB, helpers, scraping
+│   │   │── tools.py        # tools for agent 
 │   └── main.py             # Entrypoint for agent logic
 │
 ├── backend/                # FastAPI backend
@@ -93,22 +94,5 @@ POST /api/ask
 ```bash
 python rag.py
 ```
-
----
-
-## Key Components
-
-- **agent/ai/graph.py**: Orchestrates the LLM, tool use, and output nodes.
-- **agent/services/rag/**: Handles document loading, splitting, vector DB, and retrieval tools.
-- **backend/main.py**: FastAPI endpoints for health and chat.
-- **agent/main.py**: Agent setup and chat logic for both API and CLI.
-
----
-
-## Extending
-
-- Add new tools in `agent/services/rag/tools.py`.
-- Add new data sources in `agent/services/scraper/`.
-- Adjust prompts in `agent/ai/prompts.py`.
 
 ---
