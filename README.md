@@ -11,6 +11,13 @@ It uses LangChain, Qdrant, and Gemini for document retrieval and LLM-based respo
 
 ---
 
+## Frontend
+
+To test this backend with a frontend, use the official frontend repository:  
+[https://github.com/ombothre/rag-chatbot-frontend](https://github.com/ombothre/rag-chatbot-frontend)
+
+Follow the instructions there to set up and connect the frontend to this backend
+
 ## Project Structure
 
 ```
