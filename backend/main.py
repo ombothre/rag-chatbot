@@ -1,5 +1,5 @@
 from fastapi import FastAPI, HTTPException, Header, Request, Depends
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from backend.models.query import QueryRequest, QueryResponse
 from langchain_core.messages import AnyMessage
@@ -62,3 +62,21 @@ async def ask_question(
         print("REDIS ADD ERROR: ", str(e))
 
     return QueryResponse(answer=response, session_id=session_id)
+
+@app.post("/api/end_session", tags=["Chat"])
+async def close_current(
+        session_id: Annotated[str, Header()],
+        db: RedisDB = Depends(get_redis_db)
+    ):
+
+    try:
+        await db.delete_session(session_id)
+        return JSONResponse(
+            status_code=201,
+            content="Session Cleared"
+        )
+    except Exception as e:
+        return HTTPException(
+            status_code=400,
+            detail=f"Could not clear session: {str(e)}"
+        )
