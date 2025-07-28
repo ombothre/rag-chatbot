@@ -1,44 +1,41 @@
-from agent.services.helpers import ai_input, ai_print
-from agent.models.state import MessageState
+from langchain_core.messages import AnyMessage, AIMessage
+from collections.abc import Sequence
 from agent.ai.graph import AiGraph
-from typing import cast
+from agent.models.state import MessageState
+from agent.services.helpers import ai_input
+from agent.services.rag.vectordb import vdb
 from agent.services.rag.processor import Processor
 from pathlib import Path
-from agent.services.rag.vectordb import vdb
-from langchain_core.messages import AIMessage
+from typing import cast
 
 changi_txt_path = Path("agent/services/scraper/data/changi/visible_text")
 changi_pdf_path = Path("agent/services/scraper/data/changi/pdfs")
-
 jewel_txt_path = Path("agent/services/scraper/data/jewel/visible_text")
 jewel_pdf_path = Path("agent/services/scraper/data/jewel/pdfs")
 
 def rag_setup():
     if vdb.check_empty():
         rag_processor = Processor(
-            txt_paths=[changi_txt_path, jewel_txt_path], 
+            txt_paths=[changi_txt_path, jewel_txt_path],
             pdf_paths=[changi_pdf_path, jewel_pdf_path]
         )
         rag_processor.add_documents()
 
-def chat(message: str):
-    ai = AiGraph()
-    ai.view()
-    result = cast(MessageState, ai.run(ai_input(message)))
-
-    for msg in result["messages"]:
-        msg.pretty_print()
-    # ai_print(result["messages"])
-
-def api_chat(question: str) -> str:
+def api_chat(history: Sequence[AnyMessage]) -> str:
     rag_setup()
     ai = AiGraph()
-    result = cast(MessageState, ai.run(ai_input(question)))
+
+    # Flatten message history
+    flat_history: list[AnyMessage] = []
+    for msg in history:
+        if isinstance(msg, list):
+            flat_history.extend(msg)
+        else:
+            flat_history.append(msg)
+
+    result = cast(MessageState, ai.run(flat_history))
     response = cast(AIMessage, result["messages"][-1])
 
     if isinstance(response.content, list):
-        answer = "\n".join(str(item) for item in response.content)
-    else:
-        answer = response.content
-
-    return answer
+        return "\n".join(str(item) for item in response.content)
+    return response.content

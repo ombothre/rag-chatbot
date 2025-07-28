@@ -69,7 +69,11 @@ class AiGraph:
         self.builder.add_edge(Nodes.OUTPUT_NODE, Nodes.END)
 
     def run(self, messages: Sequence[AnyMessage]):
-        return self.graph.invoke({"messages": [system_prompt, *messages]})
+        # print([system_prompt, *messages])
+        try:
+            return self.graph.invoke({"messages": [system_prompt, *messages]})
+        except Exception as e:
+            print("Graph Failed: ",str(e))
     
     def get(self):
         return self.graph
