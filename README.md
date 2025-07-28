@@ -113,3 +113,7 @@ docker run -p 8000:8000 --env-file agent/config/.env rag-chatbot
 **Note:**  
 - Make sure your `.env` file is available and passed to the container using `--env-file`.
 - The provided `Dockerfile` uses `uv` for dependency management and expects your dependencies to be defined in `pyproject.toml
+
+## Redis
+
+

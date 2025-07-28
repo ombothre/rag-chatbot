@@ -1,0 +1,30 @@
+# version is now optional and deprecated, so you can remove it safely if you want.
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: my-python-app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+    environment:
+      LANGCHAIN_API_KEY: ${LANGCHAIN_API_KEY}
+      LANGCHAIN_TRACING_V2: ${LANGCHAIN_TRACING_V2}
+      GEMINI_API_KEY: ${GEMINI_API_KEY}
+      QDRANT_URL: ${QDRANT_URL}
+      QDRANT_API_KEY: ${QDRANT_API_KEY}
+      REDIS_HOST: redis
+      REDIS_PORT: ${REDIS_PORT}
+      REDIS_URL: ${REDIS_URL}
+    restart: always
+
+  redis:
+    image: redis:7
+    container_name: my-redis
+    ports:
+      - "${REDIS_PORT}:${REDIS_PORT}"
+    restart: always
