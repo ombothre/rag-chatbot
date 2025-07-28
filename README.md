@@ -124,7 +124,6 @@ docker run -p 8000:8000 --env-file agent/config/.env rag-chatbot
 ## Docker Compose
 
 A `docker-compose.yml` is provided for running both the app and Redis together.
-```
 
 ### Start all services
 
@@ -143,14 +142,6 @@ docker compose up --build
 - Redis connection details are configured via environment variables (`REDIS_URL`, `REDIS_PORT`).
 - On startup, the backend connects to Redis and stores the connection in `app.state.redis_db`.
 - If Redis is unavailable, API endpoints will return a 503 error.
-
----
-
-## Notes
-
-- The project uses `uv` for dependency management (`pyproject.toml` and `uv.lock`).
-- Make sure your `.env` file is available and passed to the container using `--env-file` or via Docker Compose.
-- For local development, ensure Redis is running (`docker run -p 6379:6379 redis:7` or use Docker Compose).
 
 ---
 
