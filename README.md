@@ -1,12 +1,15 @@
 # RAG Chatbot
 
 A Retrieval-Augmented Generation (RAG) chatbot specialized in answering questions about Changi Airport and Jewel Changi Airport.  
-It uses LangChain, Qdrant, and Gemini for document retrieval and LLM-based responses, with a FastAPI backend.
+It uses LangChain, Qdrant, and Gemini for document retrieval and LLM-based responses, with a FastAPI backend and Redis for session storage.
 
 ---
+
 ## Langgraph Flow
 
 <img width="429" height="559" alt="image" src="https://github.com/user-attachments/assets/7b5563a8-1be6-42d3-b3ad-e231400dd5a0" />
+
+---
 
 ## Project Structure
 
@@ -18,16 +21,20 @@ rag-chatbot/
 │   ├── config/             # Settings and secrets
 │   ├── models/             # State and node definitions
 │   ├── services/           # RAG, vector DB, helpers, scraping
-│   │   │── tools.py        # tools for agent 
+│   │   └── tools.py        # tools for agent 
 │   └── main.py             # Entrypoint for agent logic
 │
 ├── backend/                # FastAPI backend
+│   ├── config/             # Backend settings
+│   ├── helpers/            # Message serialization helpers
 │   ├── models/             # API request/response models
+│   ├── services/           # Lifespan and Redis client
 │   └── main.py             # API endpoints
 │
 ├── rag.py                  # CLI entrypoint for chatting
 ├── api.py                  # Run FastAPI server with Uvicorn
 ├── Dockerfile              # Docker build instructions
+├── docker-compose.yml      # Multi-container orchestration
 └── README.md
 ```
 
@@ -57,6 +64,8 @@ rag-chatbot/
     GEMINI_API_KEY=your_gemini_api_key
     QDRANT_URL=your_qdrant_url
     QDRANT_API_KEY=your_qdrant_api_key
+    REDIS_URL=localhost
+    REDIS_PORT=6379
     ```
 
 4. **Prepare data**
@@ -67,7 +76,7 @@ rag-chatbot/
 
 ## Usage
 
-### 1. Run the API server
+### 1. Run the API server (locally)
 
 ```bash
 python api.py
@@ -110,10 +119,38 @@ docker run -p 8000:8000 --env-file agent/config/.env rag-chatbot
 
 - The API will be available at [http://localhost:8000/docs](http://localhost:8000/docs).
 
-**Note:**  
-- Make sure your `.env` file is available and passed to the container using `--env-file`.
-- The provided `Dockerfile` uses `uv` for dependency management and expects your dependencies to be defined in `pyproject.toml
+---
+
+## Docker Compose
+
+A `docker-compose.yml` is provided for running both the app and Redis together.
+```
+
+### Start all services
+
+```bash
+docker compose up --build
+```
+
+- The FastAPI app will be available at [http://localhost:8000/docs](http://localhost:8000/docs).
+- Redis will be available internally as `redis:6379`.
+
+---
 
 ## Redis
 
+- The backend uses Redis for storing chat session history.
+- Redis connection details are configured via environment variables (`REDIS_URL`, `REDIS_PORT`).
+- On startup, the backend connects to Redis and stores the connection in `app.state.redis_db`.
+- If Redis is unavailable, API endpoints will return a 503 error.
+
+---
+
+## Notes
+
+- The project uses `uv` for dependency management (`pyproject.toml` and `uv.lock`).
+- Make sure your `.env` file is available and passed to the container using `--env-file` or via Docker Compose.
+- For local development, ensure Redis is running (`docker run -p 6379:6379 redis:7` or use Docker Compose).
+
+---
 
