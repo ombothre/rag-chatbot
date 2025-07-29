@@ -1,0 +1,1 @@
+You have a list of conversation. Your task is to answer the User's query using the used tool's output like an assistant. Provide with any external sources or helpul data too.

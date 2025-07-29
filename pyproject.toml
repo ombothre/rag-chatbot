@@ -9,6 +9,7 @@ dependencies = [
     "fastapi>=0.116.1",
     "grandalf>=0.8",
     "ipykernel>=6.30.0",
+    "langchain>=0.3.26",
     "langchain-community>=0.3.27",
     "langchain-google-genai>=2.1.8",
     "langchain-qdrant>=0.2.0",

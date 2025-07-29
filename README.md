@@ -52,7 +52,7 @@ rag-chatbot/
 1. **Clone the repository**
 
     ```bash
-    git clone <repo-url>
+    git clone https://github.com/ombothre/rag-chatbot
     cd rag-chatbot
     ```
 
@@ -65,19 +65,15 @@ rag-chatbot/
 
 3. **Set environment variables**
 
-    Create a `.env` file in `agent/config/` with:
-
-    ```
-    GEMINI_API_KEY=your_gemini_api_key
-    QDRANT_URL=your_qdrant_url
-    QDRANT_API_KEY=your_qdrant_api_key
-    REDIS_URL=localhost
-    REDIS_PORT=6379
-    ```
+    Create a `.env` using `.env.sample`
 
 4. **Prepare data**
 
     - Place your PDFs and text files in the appropriate `agent/services/scraper/data/...` folders.
+
+5. **Prompts**
+
+    - You can change system prompts in `static/prompts/*.txt`
 
 ---
 
