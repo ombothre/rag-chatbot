@@ -24,7 +24,7 @@ services:
 
   redis:
     image: redis:7
-    container_name: my-redis
+    container_name: redis-host
     ports:
       - "${REDIS_PORT}:${REDIS_PORT}"
     restart: always

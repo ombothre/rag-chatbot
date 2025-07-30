@@ -1,6 +1,6 @@
 from redis import asyncio as aioredis
 from backend.config.settings import utils
-from typing import List, Optional, cast, Awaitable
+from typing import List, cast, Awaitable
 
 class RedisDB:
     """Asynchronous Redis Database client for managing chat history."""
@@ -12,8 +12,12 @@ class RedisDB:
     async def create(cls):
         try:
             # Create an async client
-            client = aioredis.from_url(
-                f"redis://{utils.REDIS_URL}:{utils.REDIS_PORT}",
+            client = aioredis.Redis(
+                host=utils.REDIS_URL,
+                port=utils.REDIS_PORT,
+                username=utils.REDIS_USER,
+                password=utils.REDIS_PSW,
+                ssl=False,
                 decode_responses=True
             )
             await client.ping()
