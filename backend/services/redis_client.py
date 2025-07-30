@@ -41,6 +41,14 @@ class RedisDB:
         except Exception as e:
             print(f"Cannot connect to Redis: {str(e)}")
             return None
+        
+    async def search(self, key: str) -> bool:
+        if self.r:
+            ans = await self.r.exists(key)
+            if ans == 0:
+                return False
+            return True
+        return False
 
     async def add_message(self, key: str, value: str):
         if self.r:

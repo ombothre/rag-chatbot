@@ -41,6 +41,8 @@ async def ask_question(
     
     if not session_id:
         session_id = str(uuid.uuid4())
+        if await db.search(session_id):
+            await db.delete_session(session_id)
 
     session_history_s = await db.get_history(session_id)
     if isinstance(session_history_s, list):
