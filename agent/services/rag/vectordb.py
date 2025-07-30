@@ -9,39 +9,47 @@ def setup_qdrant(url: str, embeddings: GoogleGenerativeAIEmbeddings) -> QdrantVe
     client = QdrantClient(url=url, api_key=utils.QDRANT_API_KEY)
     collection_found = False
     for collection in client.get_collections().collections:
-        if collection.name == 'test_rag':
+        if collection.name == 'rag':
             collection_found = True
 
     if not collection_found:
-        print("Creating new collection 'test_rag'")
+        print("Creating new collection 'rag'")
         client.create_collection(
-            collection_name="test_rag",
+            collection_name="rag",
             vectors_config=VectorParams(size=768, distance=Distance.COSINE),
         )
     else:
-        print("Collection 'test_rag' already exists")
+        print("Collection 'rag' already exists")
 
     vector_store = QdrantVectorStore(
         client=client,
-        collection_name="test_rag",
+        collection_name="rag",
         embedding=embeddings
     )
     return vector_store
 
-class VectorDB():
-    def __init__(self, model: str = "models/embedding-001") -> None:
-        self.embeddings = GoogleGenerativeAIEmbeddings(model=model, google_api_key=utils.GEMINI_API_KEY)
-        qdrant_url = utils.QDRANT_URL if utils.QDRANT_URL else ":memory:"
+class VectorDB:
+
+    @classmethod
+    def create(cls, model: str = "models/embedding-001"):
         try:
-            self.vector_store = setup_qdrant(qdrant_url, self.embeddings)
+            embeddings = GoogleGenerativeAIEmbeddings(model=model, google_api_key=utils.GEMINI_API_KEY)
+            qdrant_url = utils.QDRANT_URL if utils.QDRANT_URL else ":memory:"
+            vector_store = setup_qdrant(qdrant_url, embeddings)
+
+            return cls(vector_store)
+        
         except Exception as e:
-            print(f"Error adding docs: {str(e)}")
+             print(f"Error adding docs: {str(e)}")
+
+    def __init__(self, vector_store: QdrantVectorStore) -> None:
+        self.vector_store = vector_store
     
     def get_vector_db(self) -> QdrantVectorStore:
         return self.vector_store
     
     def check_empty(self) -> bool:
-        stats = self.vector_store.client.get_collection("test_rag")
+        stats = self.vector_store.client.get_collection("rag")
         return stats.points_count == 0
     
     def add_documents(self, documents: list[Document]) -> None:
@@ -51,7 +59,5 @@ class VectorDB():
         except Exception as e:
             print(f"Error adding docs: {str(e)}")
     
-    def similarity_search(self, query: str, k: int = 2) -> list[Document]:
+    def similarity_search(self, query: str, k: int = 3) -> list[Document]:
         return self.vector_store.similarity_search(query=query, k=k)
-
-vdb = VectorDB()

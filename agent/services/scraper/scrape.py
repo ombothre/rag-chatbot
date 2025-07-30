@@ -4,7 +4,7 @@ from urllib.parse import urljoin, urlparse
 import os
 import time
 
-base_url = "https://www.jewelchangiairport.com"
+base_url = "https://www.changiairport.com/in/en.html"
 visited = set()
 
 headers = {

@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Header, Request, Depends
 from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from agent.services.rag.vectordb import VectorDB
 from backend.models.query import QueryRequest, QueryResponse
 from langchain_core.messages import AnyMessage
 from typing import Optional, Annotated
@@ -32,11 +33,17 @@ async def get_redis_db(request: Request) -> RedisDB:
         raise HTTPException(status_code=503, detail="Redis not connected")
     return request.app.state.redis_db
 
+async def get_vector_db(request: Request) -> VectorDB:
+    if not hasattr(request.app.state, 'vector_db') or not request.app.state.vector_db:
+        raise HTTPException(status_code=503, detail="QDRANT not connected")
+    return request.app.state.vector_db
+
 @app.post("/api/ask", response_model=QueryResponse, tags=["Chat"])
 async def ask_question(
         payload: QueryRequest, 
         session_id: Annotated[Optional[str], Header()] = None,
-        db: RedisDB = Depends(get_redis_db)
+        db: RedisDB = Depends(get_redis_db),
+        vector: VectorDB = Depends(get_vector_db)
     ):
     
     if not session_id:
@@ -52,7 +59,7 @@ async def ask_question(
     human_msg = to_human_msg(payload.question)
     session_history.append(human_msg)
 
-    response = api_chat(history=session_history)
+    response = api_chat(history=session_history, vector=vector)
 
     ai_msg = to_ai_msg(response)
     session_history.append(ai_msg)

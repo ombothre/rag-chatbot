@@ -38,7 +38,6 @@ rag-chatbot/
 │   ├── services/           # Lifespan and Redis client
 │   └── main.py             # API endpoints
 │
-├── rag.py                  # CLI entrypoint for chatting
 ├── api.py                  # Run FastAPI server with Uvicorn
 ├── Dockerfile              # Docker build instructions
 ├── docker-compose.yml      # Multi-container orchestration
@@ -94,12 +93,6 @@ POST /api/ask
 {
   "question": "What are the amenities at Jewel Changi Airport?"
 }
-```
-
-### 2. Chat via CLI
-
-```bash
-python rag.py
 ```
 
 ---
