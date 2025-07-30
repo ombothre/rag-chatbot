@@ -2,7 +2,7 @@ from langchain_community.document_loaders import TextLoader, PyPDFLoader
 from langchain_core.documents import Document
 from pathlib import Path
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from agent.services.rag.vectordb import vdb
+from agent.services.rag.vectordb import VectorDB
 
 # Documents
 def get_text_loaders(paths: list[Path]) -> list[Document]:
@@ -29,13 +29,14 @@ text_splitter = RecursiveCharacterTextSplitter(
 )
 
 class Processor():
-    def __init__(self, pdf_paths: list[Path], txt_paths: list[Path]) -> None:
+    def __init__(self, pdf_paths: list[Path], txt_paths: list[Path], vdb: VectorDB) -> None:
         self.documents: list[Document] = get_documents(pdf_paths, txt_paths)
         print("DOCUMENTS: ", len(self.documents))
         self.chunked_documents = text_splitter.split_documents(self.documents)
+        self.vector = vdb
     
     def get_chunked_documents(self) -> list[Document]:
         return self.chunked_documents
     
     def add_documents(self) -> None:
-        vdb.add_documents(self.chunked_documents)
+        self.vector.add_documents(self.chunked_documents)

@@ -1,7 +1,7 @@
 from langchain_core.messages import AnyMessage, HumanMessage, AIMessage, ToolMessage
-from typing import Callable
+from typing import Callable, cast
 from langchain_core.messages.tool import ToolCall
-from agent.services.rag.tools import tools
+from langchain_core.tools import Tool, BaseTool
 from langgraph.graph.state import CompiledStateGraph
 from collections.abc import Sequence
 
@@ -26,7 +26,7 @@ def ai_print(state: Sequence[AnyMessage]) -> None:
 def has_tools(message: AnyMessage) -> bool:
     return isinstance(message, AIMessage) and bool(message.tool_calls)
 
-def run_tools(tool_list: Sequence[ToolCall]) -> Sequence[ToolMessage]:
+def run_tools(tool_list: Sequence[ToolCall], tools: dict[str, Tool]) -> Sequence[ToolMessage]:
 
     tool_outputs: Sequence[ToolMessage] = []
     

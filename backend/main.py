@@ -11,8 +11,6 @@ from backend.services.lifespan import lifespan
 from backend.services.redis_client import RedisDB
 import uuid
 
-redis_db = RedisDB.create()
-
 app = FastAPI(title="RAG Chatbot API", lifespan=lifespan)
 
 app.add_middleware(

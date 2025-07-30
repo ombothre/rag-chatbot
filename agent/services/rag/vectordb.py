@@ -6,7 +6,7 @@ from qdrant_client.models import VectorParams, Distance
 from langchain_core.documents import Document
 
 def setup_qdrant(url: str, embeddings: GoogleGenerativeAIEmbeddings) -> QdrantVectorStore:
-    client = QdrantClient(url=url, api_key=utils.QDRANT_API_KEY)
+    client = QdrantClient(url=url, api_key=utils.QDRANT_API_KEY, timeout=120, prefer_grpc=True)
     collection_found = False
     for collection in client.get_collections().collections:
         if collection.name == 'rag':
