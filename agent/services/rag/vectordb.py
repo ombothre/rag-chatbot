@@ -9,21 +9,21 @@ def setup_qdrant(url: str, embeddings: GoogleGenerativeAIEmbeddings) -> QdrantVe
     client = QdrantClient(url=url, api_key=utils.QDRANT_API_KEY, timeout=120, prefer_grpc=True)
     collection_found = False
     for collection in client.get_collections().collections:
-        if collection.name == 'rag':
+        if collection.name == utils.QDRANT_DB:
             collection_found = True
 
     if not collection_found:
-        print("Creating new collection 'rag'")
+        print(f"Creating new collection {utils.QDRANT_DB}")
         client.create_collection(
-            collection_name="rag",
+            collection_name=utils.QDRANT_DB,
             vectors_config=VectorParams(size=768, distance=Distance.COSINE),
         )
     else:
-        print("Collection 'rag' already exists")
+        print(f"Collection {utils.QDRANT_DB} already exists")
 
     vector_store = QdrantVectorStore(
         client=client,
-        collection_name="rag",
+        collection_name=utils.QDRANT_DB,
         embedding=embeddings
     )
     return vector_store
@@ -49,7 +49,7 @@ class VectorDB:
         return self.vector_store
     
     def check_empty(self) -> bool:
-        stats = self.vector_store.client.get_collection("rag")
+        stats = self.vector_store.client.get_collection(utils.QDRANT_DB)
         return stats.points_count == 0
     
     def add_documents(self, documents: list[Document]) -> None:
